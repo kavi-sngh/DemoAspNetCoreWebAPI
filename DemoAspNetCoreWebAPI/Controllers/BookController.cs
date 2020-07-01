@@ -31,9 +31,10 @@ namespace DemoAspNetCoreWebAPI.Controllers
 
         // GET api/<BookController>/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public Book Get(int id)
         {
-            return "value";
+            var book = bookDbContext.Books.Find(id);
+            return book;
         }
 
         // POST api/<BookController>
