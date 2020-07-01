@@ -2,9 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using DemoAspNetCoreWebAPI.Model;
-using Microsoft.AspNetCore.Http;
+using DemoAspNetCoreWebAPI.Data;
 using Microsoft.AspNetCore.Mvc;
+using DemoAspNetCoreWebAPI.Model;
+using Microsoft.EntityFrameworkCore;
+
+// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace DemoAspNetCoreWebAPI.Controllers
 {
@@ -12,34 +15,43 @@ namespace DemoAspNetCoreWebAPI.Controllers
     [ApiController]
     public class BookController : ControllerBase
     {
-        static List<Book> books = new List<Book>
-        {
-            new Book {Id = 1, Author = "Paulo Coelho" , Title = "The Alchemist", Description = "Self-help"},
-            new Book {Id = 2, Author = "Dan Brown" , Title = "The Da Vinci Code", Description = "Thriller"}
-        };
+        BookDbContext bookDbContext;
 
+        public BookController(BookDbContext bookDbContext)
+        {
+            this.bookDbContext = bookDbContext;
+        }
+
+        // GET: api/<BookController>
         [HttpGet]
-        public IEnumerable<Book> GetBooks()
+        public IEnumerable<Book> Get()
         {
-            return books;
+            return bookDbContext.Books;
         }
 
+        // GET api/<BookController>/5
+        [HttpGet("{id}")]
+        public string Get(int id)
+        {
+            return "value";
+        }
+
+        // POST api/<BookController>
         [HttpPost]
-        public void CreateBook([FromBody] Book book)
+        public void Post([FromBody] string value)
         {
-            books.Add(book);
         }
 
+        // PUT api/<BookController>/5
         [HttpPut("{id}")]
-        public void UpdateBook(int id, [FromBody]Book book)
+        public void Put(int id, [FromBody] string value)
         {
-            books[id] = book;
         }
 
+        // DELETE api/<BookController>/5
         [HttpDelete("{id}")]
-        public void DeleteBook(int id)
+        public void Delete(int id)
         {
-            books.RemoveAt(id);
         }
     }
 }
