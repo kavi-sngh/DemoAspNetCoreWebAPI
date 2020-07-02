@@ -47,7 +47,9 @@ namespace DemoAspNetCoreWebAPI
 
             app.UseAuthorization();
 
-            bookDbContext.Database.EnsureCreated();
+            // bookDbContext.Database.EnsureCreated();
+
+            //bookDbContext.Database.Migrate();
 
             app.UseEndpoints(endpoints =>
             {
