@@ -6,6 +6,7 @@ using DemoAspNetCoreWebAPI.Data;
 using Microsoft.AspNetCore.Mvc;
 using DemoAspNetCoreWebAPI.Model;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Http;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -24,35 +25,60 @@ namespace DemoAspNetCoreWebAPI.Controllers
 
         // GET: api/<BookController>
         [HttpGet]
-        public IEnumerable<Book> Get()
+        public IActionResult Get()
         {
-            return bookDbContext.Books;
+            return Ok(bookDbContext.Books);
         }
 
         // GET api/<BookController>/5
         [HttpGet("{id}")]
-        public Book Get(int id)
+        public IActionResult Get(int id)
         {
             var book = bookDbContext.Books.Find(id);
-            return book;
+            if(book == null)
+            {
+                return NotFound("No record found!");
+            }
+            return Ok(book);
         }
 
         // POST api/<BookController>
         [HttpPost]
-        public void Post([FromBody] string value)
+        public IActionResult Post([FromBody] Book book)
         {
+            bookDbContext.Books.Add(book);
+            bookDbContext.SaveChanges();
+            return StatusCode(StatusCodes.Status201Created);
         }
 
         // PUT api/<BookController>/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public IActionResult Put(int id, [FromBody] Book book)
         {
+            var entity = bookDbContext.Books.Find(id);
+            if(entity == null)
+            {
+                return NotFound("No record found!");
+            }
+            entity.Author = book.Author;
+            entity.Description = book.Description;
+            entity.Title = book.Title;
+            bookDbContext.SaveChanges();
+            return Ok("Record Updated!");
         }
 
         // DELETE api/<BookController>/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public IActionResult Delete(int id)
         {
+            var entity = bookDbContext.Books.Find(id);
+            if(entity == null)
+            {
+                return NotFound("No Record found!");
+            }
+            bookDbContext.Books.Remove(entity);
+            bookDbContext.SaveChanges();
+            return Ok("Record Deleted!");
         }
     }
 }
