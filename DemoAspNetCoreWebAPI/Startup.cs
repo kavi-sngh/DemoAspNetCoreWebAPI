@@ -30,6 +30,7 @@ namespace DemoAspNetCoreWebAPI
         {
             services.AddControllers();
             services.AddDbContext<BookDbContext>(options => options.UseSqlServer(@"Data Source =kavi-PC\SQLExpress;Initial Catalog = BooksDb; Integrated Security=True;"));
+            services.AddMvc().AddXmlSerializerFormatters();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
