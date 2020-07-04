@@ -25,9 +25,23 @@ namespace DemoAspNetCoreWebAPI.Controllers
 
         // GET: api/<BookController>
         [HttpGet]
-        public IActionResult Get()
+        public IActionResult Get(string sort = "asc")
         {
-            return Ok(bookDbContext.Books);
+            IQueryable<Book> bookCollection;
+            switch (sort)
+            {
+                case "asc":
+                    bookCollection = bookDbContext.Books.OrderBy(o => o.PublishedDate);
+                    break;
+                case "desc":
+                    bookCollection = bookDbContext.Books.OrderByDescending(o => o.PublishedDate);
+                    break;
+                default:
+                    bookCollection = bookDbContext.Books;
+                    break;
+            }
+
+            return Ok(bookCollection);
         }
 
         // GET api/<BookController>/5
@@ -63,6 +77,7 @@ namespace DemoAspNetCoreWebAPI.Controllers
             entity.Author = book.Author;
             entity.Description = book.Description;
             entity.Title = book.Title;
+            entity.PublishedDate = book.PublishedDate;
             bookDbContext.SaveChanges();
             return Ok("Record Updated!");
         }
