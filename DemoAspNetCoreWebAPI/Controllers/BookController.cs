@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using DemoAspNetCoreWebAPI.Model;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore.Internal;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -44,6 +45,17 @@ namespace DemoAspNetCoreWebAPI.Controllers
             return Ok(bookCollection);
         }
 
+        [HttpGet]
+        [Route("[action]")]
+        public IActionResult GetBooksByPage(int? pageNum, int? pageSize)
+        {
+            var collection = bookDbContext.Books;
+            var currentPageNum = pageNum ?? 1;
+            var currentPageSize = pageSize ?? 5;
+            //Wont work with SQL 2008 as Fetch and Offset not supported
+            return Ok(collection.Skip((currentPageNum - 1)*currentPageSize).Take(currentPageSize));
+        }
+
         // GET api/<BookController>/5
         [HttpGet("{id}")]
         public IActionResult Get(int id)
@@ -54,6 +66,13 @@ namespace DemoAspNetCoreWebAPI.Controllers
                 return NotFound("No record found!");
             }
             return Ok(book);
+        }
+
+        [HttpGet("[action]")]
+        public IActionResult SearchByAuthor(string author)
+        {
+            var books = bookDbContext.Books.Where(book => book.Author.StartsWith(author));
+            return Ok(books);
         }
 
         // POST api/<BookController>
