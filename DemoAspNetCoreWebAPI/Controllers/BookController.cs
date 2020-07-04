@@ -26,6 +26,7 @@ namespace DemoAspNetCoreWebAPI.Controllers
 
         // GET: api/<BookController>
         [HttpGet]
+        [ResponseCache(Duration = 20, Location = ResponseCacheLocation.Client)]
         public IActionResult Get(string sort = "asc")
         {
             IQueryable<Book> bookCollection;

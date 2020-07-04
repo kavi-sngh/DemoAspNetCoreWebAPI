@@ -31,6 +31,7 @@ namespace DemoAspNetCoreWebAPI
             services.AddControllers();
             services.AddDbContext<BookDbContext>(options => options.UseSqlServer(@"Data Source =kavi-PC\SQLExpress;Initial Catalog = BooksDb; Integrated Security=True;"));
             services.AddMvc().AddXmlSerializerFormatters();
+            services.AddResponseCaching();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -50,6 +51,8 @@ namespace DemoAspNetCoreWebAPI
             // bookDbContext.Database.EnsureCreated();
 
             //bookDbContext.Database.Migrate();
+
+            app.UseResponseCaching();
 
             app.UseEndpoints(endpoints =>
             {
